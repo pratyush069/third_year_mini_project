@@ -1,0 +1,27 @@
+# ---- Data ----
+data:
+  base_url: https://raw.githubusercontent.com/deepkashiwa20/MegaCRN/main/EXPYTKY
+  months: ["202110", "202111", "202112"]
+  n_links_total: 2841          # links in the full CSV
+  subset_file: tokyo_link_idx.csv   # 1843-link subset used in the paper
+  interval_min: 10             # one reading every 10 minutes
+  raw_dir: data/raw
+  processed_dir: data/processed
+
+# ---- Split (chronological) ----
+split:
+  test_month: "202112"         # December = test
+  val_ratio: 0.1               # last 10% of Oct-Nov = validation
+
+# ---- Experiment defaults (overridden by experiments.py grid) ----
+experiment:
+  window: 6                    # 6 steps x 10 min = 1 hour of history
+  horizon: 3                   # predict 3 steps ahead = 30 minutes
+  windows: [6, 12, 18]
+  horizons: [1, 3, 6]
+
+# ---- Graph (for STGCN) ----
+graph:
+  sigma_m: 500                 # Gaussian kernel width in metres
+  epsilon: 0.1                 # drop weights below this -> sparse graph
+  add_road_links: true         # also connect links that are directly joined on the road (adj01)

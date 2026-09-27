@@ -1,0 +1,18 @@
+# Data handling
+numpy
+pandas
+pyyaml
+certifi            # trusted SSL certificates for downloads (needed on macOS)
+jpholiday          # Japanese public holidays (time feature)
+# Classical ML
+scikit-learn       # Linear Regression + metrics
+xgboost
+# Deep learning (LSTM, STGCN) - Colab already has torch installed
+torch
+# Plots, notebooks
+matplotlib
+jupyter
+# Deployment (Phase 6)
+fastapi
+uvicorn
+streamlit
