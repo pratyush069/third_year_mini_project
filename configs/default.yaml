@@ -25,3 +25,16 @@ graph:
   sigma_m: 500                 # Gaussian kernel width in metres
   epsilon: 0.1                 # drop weights below this -> sparse graph
   add_road_links: true         # also connect links that are directly joined on the road (adj01)
+
+# ---- Baselines (Phase 2) ----
+baselines:
+  train_samples: 2000000       # random (time, link) examples used to fit LR / XGBoost
+  val_samples: 300000          # used by XGBoost early stopping
+  seed: 42
+  xgb:
+    n_estimators: 1000         # max number of trees (early stopping picks fewer)
+    learning_rate: 0.1         # how much each new tree corrects the previous ones
+    max_depth: 8               # how many questions each tree may ask
+    subsample: 0.8             # each tree sees 80% of rows -> less overfitting
+    colsample_bytree: 0.8      # ...and 80% of features
+    early_stopping_rounds: 30  # stop when validation error hasn't improved for 30 trees

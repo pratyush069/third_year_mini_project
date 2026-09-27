@@ -23,6 +23,11 @@ python3 -m venv .venv
 | 2. Clean + build speed matrix | `python -m src.data.preprocess` | `data/processed/speed.npz` [13248 x 1843] |
 | 3. Build road graph | `python -m src.data.graph` | `data/processed/adj.npy` [1843 x 1843] |
 | 4. Exploratory figures | `python -m src.eda` | `results/figures/*.png` |
+| 5. One model, one setting | `python -m src.train --model xgboost --window 6 --horizon 3` | row in `results/all_results.csv` |
+| 6. Full window x horizon grid | `python -m src.experiments --models persistence linear xgboost` | `results/all_results.csv` |
+| 7. Tables + plots | `python -m src.report` | `results/figures/fig_mae_vs_*.png` |
+
+On Google Colab, open `notebooks/colab_runner.ipynb` (data and results are kept in Google Drive).
 
 All settings are in `configs/default.yaml`.
 
