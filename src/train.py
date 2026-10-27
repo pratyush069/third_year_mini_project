@@ -15,7 +15,9 @@ from src.data import windows as W
 from src.evaluate import Metrics
 from src.models import baselines
 
-RESULTS = "results/all_results.csv"
+# Keep results from the earlier configuration separate. That file used different
+# window/validation settings and must not be mixed into the final comparison.
+RESULTS = "results/comparison_results.csv"
 
 
 def evaluate_split(model, data, split, window, horizon, link_mean):
@@ -28,14 +30,18 @@ def evaluate_split(model, data, split, window, horizon, link_mean):
 
 def run(model_name, window, horizon, cfg, data=None):
     data = data or W.load_data()
+    if model_name == "stgcn":
+        from src.models.stgcn import run_stgcn
+        return run_stgcn(window, horizon, cfg, data)
     rng = np.random.default_rng(cfg["baselines"]["seed"])
     link_mean = W.train_link_mean(data)
 
     X_tr = y_tr = X_va = y_va = None
     if model_name != "persistence":
-        tau, links = W.sample_rows(data, "train", window, horizon, cfg["baselines"]["train_samples"], rng)
+        sample_cfg = cfg["deep_learning"] if model_name == "lstm" else cfg["baselines"]
+        tau, links = W.sample_rows(data, "train", window, horizon, sample_cfg["train_samples"], rng)
         X_tr, y_tr, _ = W.tabular(data, tau, links, window, horizon, link_mean)
-        tau, links = W.sample_rows(data, "val", window, horizon, cfg["baselines"]["val_samples"], rng)
+        tau, links = W.sample_rows(data, "val", window, horizon, sample_cfg["val_samples"], rng)
         X_va, y_va, _ = W.tabular(data, tau, links, window, horizon, link_mean)
 
     print(f"\n=== {model_name} | window={window} ({window * 10} min) | horizon={horizon} ({horizon * 10} min) ===")
@@ -58,7 +64,8 @@ def run(model_name, window, horizon, cfg, data=None):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--model", required=True, choices=["persistence", "linear", "xgboost"])
+    p.add_argument("--model", required=True,
+                   choices=["persistence", "linear", "xgboost", "lstm", "stgcn"])
     p.add_argument("--window", type=int, default=None)
     p.add_argument("--horizon", type=int, default=None)
     a = p.parse_args()

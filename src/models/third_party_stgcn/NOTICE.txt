@@ -1,0 +1,3 @@
+Adapted from hazdzz/stgcn (PyTorch STGCN), licensed under LGPL-2.1.
+Upstream: https://github.com/hazdzz/stgcn
+The copied model/layers.py and model/models.py are included with changes for package imports, sparse graph multiplication, and project integration.

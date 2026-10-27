@@ -63,4 +63,8 @@ def build(name, cfg):
         return Linear()
     if name == "xgboost":
         return XGB(random_state=cfg["baselines"]["seed"], **cfg["baselines"]["xgb"])
+    if name == "lstm":
+        # Import PyTorch only when requested; classical models do not need it.
+        from src.models.lstm import LSTMRegressor
+        return LSTMRegressor(cfg["deep_learning"])
     raise ValueError(f"unknown model {name}")

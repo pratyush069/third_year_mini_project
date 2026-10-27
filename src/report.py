@@ -1,4 +1,4 @@
-"""Summarise results/all_results.csv into tables and research plots.
+"""Summarise results/comparison_results.csv into tables and research plots.
 
 Usage:  python -m src.report            -> prints test tables, saves results/figures/fig_*_vs_*.png
 """
@@ -13,7 +13,7 @@ OUT = "results/figures"
 
 
 def main():
-    df = pd.read_csv("results/all_results.csv").query("split == 'test'")
+    df = pd.read_csv("results/comparison_results.csv").query("split == 'test'")
     df = df.drop_duplicates(["model", "window", "horizon"], keep="last")
     models = [m for m in ORDER if m in set(df.model)]
 

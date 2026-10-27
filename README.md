@@ -11,9 +11,13 @@ Oct-Dec 2021 (from vehicle GPS probes). Source: MegaCRN repository, MIT license.
 > R. Jiang et al., "Spatio-Temporal Meta-Graph Learning for Traffic Forecasting," AAAI 2023.
 
 ## Setup
+The project is intended to run in **Kaggle Notebooks** so the LSTM and STGCN can use
+Kaggle's available GPU. Install `requirements.txt` only if you also want to run the
+pipeline locally.
+
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt   # macOS: also `brew install libomp` for XGBoost
+.venv/bin/pip install -r requirements.txt
 ```
 
 ## Pipeline
@@ -23,11 +27,14 @@ python3 -m venv .venv
 | 2. Clean + build speed matrix | `python -m src.data.preprocess` | `data/processed/speed.npz` [13248 x 1843] |
 | 3. Build road graph | `python -m src.data.graph` | `data/processed/adj.npy` [1843 x 1843] |
 | 4. Exploratory figures | `python -m src.eda` | `results/figures/*.png` |
-| 5. One model, one setting | `python -m src.train --model xgboost --window 6 --horizon 3` | row in `results/all_results.csv` |
-| 6. Full window x horizon grid | `python -m src.experiments --models persistence linear xgboost` | `results/all_results.csv` |
+| 5. One model, one setting | `python -m src.train --model xgboost --window 6 --horizon 3` | row in `results/comparison_results.csv` |
+| 6. Full window x horizon grid | `python -m src.experiments` | 45 runs in `results/comparison_results.csv` |
 | 7. Tables + plots | `python -m src.report` | `results/figures/fig_mae_vs_*.png` |
 
-On Google Colab, open `notebooks/colab_runner.ipynb` (data and results are kept in Google Drive).
+Start with one setting of each model before launching the full grid, for example:
+`python -m src.train --model stgcn --window 6 --horizon 3`.
+The earlier `results/all_results.csv` is retained as an archive; new runs use
+`results/comparison_results.csv` so results from different settings are not mixed.
 
 All settings are in `configs/default.yaml`.
 
@@ -37,6 +44,6 @@ All settings are in `configs/default.yaml`.
   inputs, and excluded from error metrics (masked MAE/RMSE/MAPE).
 - Graph: Gaussian kernel on road distance, `w = exp(-(d/500 m)^2)`, weights < 0.1 dropped,
   plus direct road connections; 7 otherwise-isolated links joined to their nearest link.
-- Split: Oct-Nov = train/validation, Dec = test (chronological).
+- Split: Oct-Nov = train/validation (last 25% for validation), Dec = test (chronological).
 - Known limitation: ~21-36 of 1,843 links contain template-filled (repeated) days in the
   source data; kept for comparability with published results.

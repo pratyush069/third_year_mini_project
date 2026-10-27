@@ -35,5 +35,6 @@ def main(models):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--models", nargs="+", default=["persistence", "linear", "xgboost"])
+    p.add_argument("--models", nargs="+",
+                   default=["persistence", "linear", "xgboost", "lstm", "stgcn"])
     main(p.parse_args().models)
